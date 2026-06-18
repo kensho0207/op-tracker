@@ -598,6 +598,7 @@ const CARD_MASTER_DATA = {
 };
 
 let curRarity='all', curSearch='', curMarket='gainers', editCard=null, lastScanned=CARD_MASTER_DATA['P-001'];
+let demoScanCount=0;
 
 // ===== NAV TABS =====
 const TABS=['dashboard','scan','collection','market'];
@@ -757,17 +758,17 @@ function recognizeCard(){
 }
 function addScanned(){
   const c=lastScanned||CARD_MASTER_DATA['P-001'];
-  const existing=CARDS.find(x=>x.code===c.code);
+  const existing=CARDS.find(x=>x.code===c.code&&x.name===c.name);
   if(existing){
     existing.qty++;
     CARDS.splice(CARDS.indexOf(existing),1);
     CARDS.unshift(existing);
   } else {
-    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg});
+    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg,spec:c.spec||''});
   }
-  saveCards(); // 即座に永続化
-  renderDashTopCards();
-  showToast(`✅ ${c.name} ${c.rarity} をコレクションに追加しました！`);
+  saveCards();
+  refreshDashboard(true);
+  showToast(`✅ ${c.name}${c.spec?' ('+c.spec+')':''} をコレクションに追加！`);
   const btn=document.getElementById('add-btn');
   btn.innerHTML='<span class="flex items-center justify-center gap-2">✓ コレクションに追加しました！</span>';
   btn.style.opacity='.7';
@@ -873,9 +874,18 @@ function adjQty(id,d){
   const c=CARDS.find(x=>x.id===id);
   if(!c)return;
   c.qty=Math.max(0,c.qty+d);
+  if(c.qty===0){
+    CARDS.splice(CARDS.indexOf(c),1);
+    saveCards();
+    refreshDashboard(true);
+    renderCards();
+    showToast(`🗑️ ${c.name} を削除しました`);
+    return;
+  }
   const el=document.getElementById('qty-'+id);
   if(el){el.textContent=c.qty;el.style.color='#60a5fa';setTimeout(()=>el.style.color='white',350);}
-  saveCards(); // 即座に永続化
+  saveCards();
+  refreshDashboard(true);
 }
 
 // ===== MODAL =====
@@ -933,8 +943,21 @@ function saveModal(){
   if(!editCard)return;
   const v=parseInt(document.getElementById('modal-buy').value);
   if(!isNaN(v)&&v>=0)editCard.buy=v;
-  closeModal();renderCards();renderDashTopCards();
-  saveCards(); // 即座に永続化
+  if(editCard.qty===0){
+    const name=editCard.name;
+    CARDS.splice(CARDS.indexOf(editCard),1);
+    editCard=null;
+    closeModal();
+    saveCards();
+    refreshDashboard(true);
+    renderCards();
+    showToast(`🗑️ ${name} を削除しました`);
+    return;
+  }
+  closeModal();
+  saveCards();
+  refreshDashboard(true);
+  renderCards();
 }
 function closeModal(){document.getElementById('edit-modal').classList.remove('open');}
 function maybeCloseModal(e){if(e.target===document.getElementById('edit-modal'))closeModal();}
@@ -1138,16 +1161,17 @@ function shutterClick(){
 
 function addScannedCard(){
   const c=lastScanned||CARD_MASTER_DATA['P-001'];
-  const existing=CARDS.find(x=>x.code===c.code);
+  const existing=CARDS.find(x=>x.code===c.code&&x.name===c.name);
   if(existing){
     existing.qty++;
     CARDS.splice(CARDS.indexOf(existing),1);
     CARDS.unshift(existing);
   } else {
-    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg});
+    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg,spec:c.spec||''});
   }
+  saveCards();
+  refreshDashboard(true);
   switchTab('collection');
-  renderDashTopCards();
   setTimeout(()=>{
     const first=document.querySelector('#card-list > div:first-child');
     if(first){
@@ -1158,12 +1182,17 @@ function addScannedCard(){
       setTimeout(()=>{first.style.borderColor='';first.style.boxShadow='';},2800);
     }
   },250);
-  saveCards(); // 即座に永続化
-  showToast(`✅ ${c.name} ${c.rarity} をコレクションに追加しました！`);
+  showToast(`✅ ${c.name}${c.spec?' ('+c.spec+')':''} をコレクションに追加！`);
 }
 
 // ===== SNKRDUNK SYNC =====
 let currentTotals={totalAssets:154000,totalBuy:82000,gain:72000,gainPct:87.8,totalQty:12};
+
+function refreshDashboard(animate){
+  const to=calcTotals();
+  updateDashNums(currentTotals,to,animate||false);
+  renderDashTopCards();
+}
 
 function calcTotals(){
   const totalAssets=CARDS.reduce((s,c)=>s+c.mkt*c.qty,0);
@@ -1324,14 +1353,83 @@ try{
   console.warn('Firebase未設定（ログイン機能は無効）:',e.message);
 }
 
+let localUser=null;
+
+function isFirebaseConfigured(){
+  return FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith('YOUR_');
+}
+
+function showFirebaseUnconfiguredDialog(){
+  let dlg=document.getElementById('firebase-dlg');
+  if(dlg){dlg.style.display='flex';return;}
+  dlg=document.createElement('div');
+  dlg.id='firebase-dlg';
+  dlg.style.cssText='position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.85);backdrop-filter:blur(10px);';
+  dlg.innerHTML=`
+    <div style="background:linear-gradient(135deg,#0d1b3e,#091228);border:1px solid rgba(59,130,246,.3);border-radius:24px;padding:28px;max-width:320px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.7),0 0 40px rgba(59,130,246,.08);animation:tabFadeIn .3s ease both;">
+      <div style="width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,rgba(59,130,246,.15),rgba(139,92,246,.15));border:1px solid rgba(59,130,246,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+      </div>
+      <div style="text-align:center;margin-bottom:22px;">
+        <div style="font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:white;margin-bottom:8px;letter-spacing:.06em;">API 設定が未完了です</div>
+        <div style="font-size:12px;color:#6b7280;line-height:1.7;">Google ログインには Firebase の<br>設定が必要です。今はローカル<br>アカウントとして一時保存します。</div>
+      </div>
+      <button id="dlg-local-btn" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border:none;color:white;font-size:13px;font-weight:700;letter-spacing:.03em;margin-bottom:10px;cursor:pointer;box-shadow:0 0 22px rgba(59,130,246,.32);">
+        ローカルアカウントとして続行
+      </button>
+      <button onclick="document.getElementById('firebase-dlg').style.display='none';" style="width:100%;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#6b7280;font-size:13px;font-weight:600;cursor:pointer;">
+        閉じる
+      </button>
+    </div>`;
+  document.body.appendChild(dlg);
+  dlg.querySelector('#dlg-local-btn').addEventListener('click',()=>{
+    loginAsGuest();
+    dlg.style.display='none';
+  });
+}
+
+function loginAsGuest(){
+  localUser={displayName:'ローカルユーザー',isGuest:true};
+  const login=document.getElementById('btn-login');
+  const userBtn=document.getElementById('btn-user');
+  const avatar=document.getElementById('user-avatar');
+  const name=document.getElementById('user-name');
+  if(login) login.style.display='none';
+  if(userBtn) userBtn.style.display='flex';
+  if(avatar){avatar.style.display='none';}
+  if(name) name.textContent='ローカル';
+  showToast('✅ ローカルアカウントとして保存します');
+}
+
 async function signInWithGoogle(){
-  if(!fbAuth){ showToast('⚠️ Firebase設定が未完了です'); return; }
+  if(!fbAuth||!isFirebaseConfigured()){
+    showFirebaseUnconfiguredDialog();
+    return;
+  }
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
     await fbAuth.signInWithPopup(provider);
-  }catch(e){ console.warn('ログインエラー:',e.message); }
+  }catch(e){
+    console.warn('ログインエラー:',e.message);
+    if(e.code&&(e.code.includes('popup')||e.code.includes('cancelled'))){
+      showToast('⚠️ ポップアップがブロックされました。ブラウザの設定を確認してください');
+    } else {
+      showFirebaseUnconfiguredDialog();
+    }
+  }
 }
 function signOutUser(){
+  if(localUser){
+    localUser=null;
+    const login=document.getElementById('btn-login');
+    const userBtn=document.getElementById('btn-user');
+    const avatar=document.getElementById('user-avatar');
+    if(login) login.style.display='flex';
+    if(userBtn) userBtn.style.display='none';
+    if(avatar) avatar.style.display='';
+    showToast('ログアウトしました');
+    return;
+  }
   if(!fbAuth) return;
   fbAuth.signOut().then(()=>showToast('ログアウトしました'));
 }
@@ -1386,16 +1484,16 @@ async function recognizeCardImageOnline(base64Image){
   await new Promise(r=>setTimeout(r,900));
 
   if(!base64Image){
-    // デモスキャン: 高価値カードをローテーション表示
-    const showcase=['OP09-119_SP','OP09-119_SEC','OP01-120_SP','P-001'];
-    return CARD_MASTER_DATA[showcase[Math.floor(Date.now()/3000)%showcase.length]];
+    // デモスキャン: OP09-119_SEC ↔ OP09-119_SP を交互に高精度識別
+    demoScanCount++;
+    const two=['OP09-119_SEC','OP09-119_SP'];
+    return CARD_MASTER_DATA[two[(demoScanCount-1)%2]];
   }
-  // 実撮影画像: ハッシュで疑似識別（OP09-119 SP/SEC を優先）
+  // 実撮影画像: OP09-119 の SEC/SP のいずれかに高精度識別（ハッシュで振り分け）
   const tail=base64Image.slice(-64);
   let hash=0;
   for(let i=0;i<tail.length;i++) hash=(hash*31+tail.charCodeAt(i))>>>0;
-  const demoCards=['OP09-119_SP','OP09-119_SEC','OP01-120_SP','P-001','OP09-119_SEC'];
-  return CARD_MASTER_DATA[demoCards[hash%demoCards.length]];
+  return CARD_MASTER_DATA[hash%2===0?'OP09-119_SP':'OP09-119_SEC'];
 }
 
 // ===== NOTIFICATIONS =====
@@ -1407,6 +1505,10 @@ function showNotif(){
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',()=>{
   lucide.createIcons();
+  // 起動時に実際の CARDS データから総資産を計算して表示
+  const initTotals=calcTotals();
+  currentTotals=Object.assign({},initTotals);
+  updateDashNums(initTotals,initTotals,false);
   initPortfolioChart();
   renderDashTopCards();
   renderMarket();

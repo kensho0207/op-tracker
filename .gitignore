@@ -1,0 +1,13 @@
+﻿node_modules/
+*.png
+*.jpg
+test_*.js
+find_api.js
+api_test*.js
+get_snkrdunk_data.js
+precheck.js
+test_result.json
+package-lock.json
+package.json
+cafe.html
+cafe_tsukiyo.html

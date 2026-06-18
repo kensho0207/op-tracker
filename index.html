@@ -16,7 +16,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans JP',sans-serif;background:#050b18;color:#e0e8ff;min-height:100vh;overflow-x:hidden;}
 .font-orb{font-family:'Orbitron',monospace;}
-.screen{display:none;}.screen.active{display:block;}
+.screen{display:none;}.screen.active{display:block;animation:tabFadeIn .28s cubic-bezier(.17,.67,.35,1.05) both;}
 .sec-gradient{background:linear-gradient(135deg,#ffd700,#ff6b00,#ff0066);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .sr-gradient{background:linear-gradient(135deg,#c0c0c0,#e8e8e8,#a0a0a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .r-gradient{background:linear-gradient(135deg,#60a5fa,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
@@ -65,6 +65,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 #btn-user:active{background:rgba(59,130,246,.22);}
 #user-avatar{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid rgba(59,130,246,.4);}
 #user-name{font-size:11px;font-weight:700;color:#93c5fd;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+@keyframes tabFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card-row:hover{border-color:rgba(96,165,250,.32) !important;box-shadow:0 0 20px rgba(59,130,246,.1),0 2px 12px rgba(0,0,0,.4);}
+.nav-btn-active{background:rgba(59,130,246,.14);border-radius:14px;transition:background .2s ease;}
+@keyframes neonGlow{0%,100%{box-shadow:0 0 14px rgba(59,130,246,.5)}50%{box-shadow:0 0 30px rgba(59,130,246,.9),0 0 60px rgba(59,130,246,.25)}}
+.neon-active{animation:neonGlow 2.8s ease-in-out infinite;}
+.premium-card{transition:transform .18s ease,box-shadow .18s ease;}
+.premium-card:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 24px rgba(59,130,246,.12);}
 </style>
 </head>
 <body class="bg-grid">
@@ -583,9 +590,11 @@ const MARKET = {
 };
 
 const CARD_MASTER_DATA = {
-  'P-001'  :{code:'P-001',  name:'モンキー・D・ルフィ',  rarity:'PR', series:'プロモーション',  mkt:3000,  buy:0,     emoji:'🤠',bg:'#1a1000'},
-  'OP09-119':{code:'OP09-119',name:'エース＆サボ＆ルフィ',rarity:'SEC',series:'The Four Emperors',mkt:15000, buy:0,     emoji:'🔥',bg:'#1a0800'},
-  'OP01-120':{code:'OP01-120',name:'シャンクス',          rarity:'SEC',series:'ROMANCE DAWN',    mkt:165000,buy:35000,emoji:'⚔️',bg:'#1a0800'},
+  'P-001'       :{code:'P-001',   name:'モンキー・D・ルフィ',  spec:'プロモ',             rarity:'PR', series:'プロモーション',    mkt:3000,   buy:0,     emoji:'🤠',bg:'#1a1000'},
+  'OP01-120_SEC':{code:'OP01-120',name:'シャンクス',           spec:'通常SEC',             rarity:'SEC',series:'ROMANCE DAWN',     mkt:1500,   buy:0,     emoji:'⚔️',bg:'#1a0800'},
+  'OP01-120_SP' :{code:'OP01-120',name:'シャンクス',           spec:'スーパーパラレル',   rarity:'SEC',series:'ROMANCE DAWN',     mkt:120000, buy:35000, emoji:'⚔️',bg:'#090020'},
+  'OP09-119_SEC':{code:'OP09-119',name:'エース＆サボ＆ルフィ', spec:'シークレット',        rarity:'SEC',series:'The Four Emperors',mkt:15000,  buy:0,     emoji:'🔥',bg:'#1a0800'},
+  'OP09-119_SP' :{code:'OP09-119',name:'モンキー・D・ルフィ',  spec:'スーパーパラレル',   rarity:'SEC',series:'The Four Emperors',mkt:150000, buy:0,     emoji:'🌟',bg:'#000a20'},
 };
 
 let curRarity='all', curSearch='', curMarket='gainers', editCard=null, lastScanned=CARD_MASTER_DATA['P-001'];
@@ -605,6 +614,8 @@ function switchTab(tab){
     const icon=document.getElementById('nicon-'+t);
     const label=document.getElementById('nlabel-'+t);
     const dot=document.getElementById('ndot-'+t);
+    const btn=document.getElementById('ntab-'+t);
+    if(btn) btn.classList.remove('nav-btn-active');
     // classList を使う（SVGAnimatedString対策）
     if(icon){try{icon.classList.remove('nav-active-icon');}catch(e){}icon.style.color='#6b7280';icon.style.filter='';}
     if(label){try{label.classList.remove('nav-active-label');}catch(e){}label.style.color='#6b7280';}
@@ -616,6 +627,8 @@ function switchTab(tab){
   const icon=document.getElementById('nicon-'+tab);
   const label=document.getElementById('nlabel-'+tab);
   const dot=document.getElementById('ndot-'+tab);
+  const btn=document.getElementById('ntab-'+tab);
+  if(btn) btn.classList.add('nav-btn-active');
   if(icon){try{icon.classList.add('nav-active-icon');}catch(e){}icon.style.color='#3b82f6';icon.style.filter='drop-shadow(0 0 7px rgba(59,130,246,.9))';}
   if(label){try{label.classList.add('nav-active-label');}catch(e){}label.style.color='#3b82f6';}
   if(dot){dot.style.background='#3b82f6';dot.style.boxShadow='0 0 6px #3b82f6';}
@@ -695,8 +708,7 @@ function startScan(){
 }
 async function demoScan(){
   setScanState('scanning');
-  // recognizeCardImage を null 画像データで呼び出し（デモ時は画像なし）
-  const card=await recognizeCardImage(null);
+  const card=await recognizeCardImageOnline(null);
   lastScanned=card||CARD_MASTER_DATA['P-001'];
   recognizeCard();
 }
@@ -809,7 +821,7 @@ function renderCards(){
     const profit=(c.mkt-c.buy)*c.qty;
     const profitRate=((c.mkt-c.buy)/c.buy*100).toFixed(1);
     const pos=profit>=0;
-    return `<div class="rounded-xl p-3 card-row" style="background:rgba(13,21,51,.85);border:1px solid rgba(59,130,246,.1);" onclick="openModal(${c.id})">
+    return `<div class="rounded-xl p-3 card-row premium-card" style="background:rgba(13,21,51,.85);border:1px solid rgba(59,130,246,.1);" onclick="openModal(${c.id})">
       <div class="flex items-start gap-3">
         <div class="w-10 h-14 rounded-lg flex-shrink-0 relative overflow-hidden flex items-center justify-center text-xl" style="background:linear-gradient(135deg,${c.bg},#05090f);">${c.emoji}
           <div class="absolute bottom-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,transparent,${rs.border},transparent);"></div>
@@ -1112,8 +1124,8 @@ function shutterClick(){
     stopCamStream();
     setCamState('scanning');
 
-    // 画像解析（将来ここがリアルOCR APIになる）
-    const card=await recognizeCardImage(capturedImage);
+    // 画像解析（OPENAI_API_KEY 設定でリアルOCRに切り替わる）
+    const card=await recognizeCardImageOnline(capturedImage);
     lastScanned=card||CARD_MASTER_DATA['P-001'];
 
     setCamState('success');
@@ -1325,68 +1337,65 @@ function signOutUser(){
 }
 
 // ===== 画像認識 OCR（AIの目） =====
-// API_KEY を設定し、コメントを外すだけで本物のOCRが動作する
-// const OPENAI_API_KEY = 'sk-...';  // OpenAI APIキー
-// const GCV_API_KEY   = 'AIza...';  // Google Cloud Vision APIキー
+// OpenAI APIキーをここに設定すると本物の画像認識が動作します
+// const OPENAI_API_KEY = 'sk-...';
 
-async function recognizeCardImage(base64Image){
-  /* ══ OpenAI GPT-4o Vision API ══════════════════════════════════════
-   * const res = await fetch('https://api.openai.com/v1/chat/completions', {
-   *   method: 'POST',
-   *   headers: {
-   *     'Content-Type': 'application/json',
-   *     'Authorization': `Bearer ${OPENAI_API_KEY}`
-   *   },
-   *   body: JSON.stringify({
-   *     model: 'gpt-4o',
-   *     messages: [{
-   *       role: 'user',
-   *       content: [
-   *         { type: 'text',
-   *           text: 'このワンピースカードゲームのカードの型番を「OP09-119」の形式で1つだけ答えてください。型番が読めない場合は「不明」と答えてください。' },
-   *         { type: 'image_url', image_url: { url: base64Image } }
-   *       ]
-   *     }],
-   *     max_tokens: 30
-   *   })
-   * });
-   * const json = await res.json();
-   * const text = json.choices?.[0]?.message?.content?.trim() || '';
-   *
-   * ══ Google Cloud Vision API ══════════════════════════════════════════
-   * const res = await fetch(
-   *   `https://vision.googleapis.com/v1/images:annotate?key=${GCV_API_KEY}`,
-   *   { method: 'POST',
-   *     headers: { 'Content-Type': 'application/json' },
-   *     body: JSON.stringify({ requests: [{
-   *       image: { content: base64Image.split(',')[1] },
-   *       features: [{ type: 'TEXT_DETECTION', maxResults: 10 }]
-   *     }]})
-   *   }
-   * );
-   * const json = await res.json();
-   * const text = json.responses?.[0]?.fullTextAnnotation?.text || '';
-   *
-   * ══ 共通: テキストから型番を抽出して CARD_MASTER_DATA にマッチング ══
-   * const m = text.match(/\b([A-Z]{2}\d{2}-\d{3}|P-\d{3}|ST\d{2}-\d{3}|EB\d{2}-\d{3})\b/);
-   * if (m?.[1] && CARD_MASTER_DATA[m[1]]) return CARD_MASTER_DATA[m[1]];
-   * ═══════════════════════════════════════════════════════════════════ */
+async function recognizeCardImageOnline(base64Image){
+  // ── リアル OpenAI GPT-4o Vision API ────────────────────────────────
+  if(typeof OPENAI_API_KEY !== 'undefined' && OPENAI_API_KEY){
+    try{
+      const res = await fetch('https://api.openai.com/v1/chat/completions',{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          'Authorization':`Bearer ${OPENAI_API_KEY}`
+        },
+        body:JSON.stringify({
+          model:'gpt-4o',
+          messages:[{
+            role:'user',
+            content:[
+              {type:'text',
+               text:'このワンピースカードゲームのカードを識別してください。型番と仕様を以下のJSON形式だけで返してください：{"code":"OP09-119","spec":"SEC"} specはスーパーパラレル/コミパラは"SP"、通常SECは"SEC"、プロモは"PR"とします。型番が読めない場合は{"code":"不明","spec":"不明"}。JSONのみ出力してください。'},
+              {type:'image_url',image_url:{url:base64Image}}
+            ]
+          }],
+          max_tokens:60
+        })
+      });
+      const json = await res.json();
+      const text = (json.choices?.[0]?.message?.content||'').trim();
+      try{
+        const obj = JSON.parse(text);
+        const code = obj.code; const spec = obj.spec;
+        if(code && code!=='不明'){
+          const key = spec==='SP' ? `${code}_SP` : spec==='PR' ? code : `${code}_SEC`;
+          if(CARD_MASTER_DATA[key]) return CARD_MASTER_DATA[key];
+          if(CARD_MASTER_DATA[code]) return CARD_MASTER_DATA[code];
+          const m = code.match(/^([A-Z]{1,2}\d{2}-\d{3}|P-\d{3}|ST\d{2}-\d{3})/);
+          if(m?.[1] && CARD_MASTER_DATA[m[1]]) return CARD_MASTER_DATA[m[1]];
+        }
+      }catch(_){
+        const m = text.match(/\b([A-Z]{1,2}\d{2}-\d{3}|P-\d{3}|ST\d{2}-\d{3}|EB\d{2}-\d{3})\b/);
+        if(m?.[1] && CARD_MASTER_DATA[m[1]]) return CARD_MASTER_DATA[m[1]];
+      }
+    }catch(e){ console.warn('OCR APIエラー:',e.message); }
+  }
 
-  // ── デモ疑似識別ロジック（APIキー設定前でも動作確認できる） ──────────
-  await new Promise(r=>setTimeout(r,800)); // APIレスポンス時間をシミュレート
+  // ── デモモード（APIキー未設定時）─────────────────────────────────
+  await new Promise(r=>setTimeout(r,900));
 
   if(!base64Image){
-    // デモスキャン（画像なし）: 呼び出し時刻でカードをローテーション
-    const keys=Object.keys(CARD_MASTER_DATA);
-    return CARD_MASTER_DATA[keys[Date.now()%keys.length]];
+    // デモスキャン: 高価値カードをローテーション表示
+    const showcase=['OP09-119_SP','OP09-119_SEC','OP01-120_SP','P-001'];
+    return CARD_MASTER_DATA[showcase[Math.floor(Date.now()/3000)%showcase.length]];
   }
-  // 実撮影画像: 末尾バイトのハッシュでカードを疑似選択
-  // → 毎フレーム映像が異なるため、毎回異なる結果になる
-  const tail=base64Image.slice(-48);
+  // 実撮影画像: ハッシュで疑似識別（OP09-119 SP/SEC を優先）
+  const tail=base64Image.slice(-64);
   let hash=0;
   for(let i=0;i<tail.length;i++) hash=(hash*31+tail.charCodeAt(i))>>>0;
-  const keys=Object.keys(CARD_MASTER_DATA);
-  return CARD_MASTER_DATA[keys[hash%keys.length]];
+  const demoCards=['OP09-119_SP','OP09-119_SEC','OP01-120_SP','P-001','OP09-119_SEC'];
+  return CARD_MASTER_DATA[demoCards[hash%demoCards.length]];
 }
 
 // ===== NOTIFICATIONS =====

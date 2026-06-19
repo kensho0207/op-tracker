@@ -7,7 +7,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<!-- Firebase SDK (compat mode) ─ Firebase Console の設定値を後から入れるだけでOK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,15 +20,10 @@ body{font-family:'Noto Sans JP',sans-serif;background:#050b18;color:#e0e8ff;min-
 .sr-gradient{background:linear-gradient(135deg,#c0c0c0,#e8e8e8,#a0a0a0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .r-gradient{background:linear-gradient(135deg,#60a5fa,#93c5fd);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .bg-grid{background-image:linear-gradient(rgba(59,130,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.04) 1px,transparent 1px);background-size:28px 28px;}
-@keyframes scanline{0%{transform:translateY(-100%);opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateY(500%);opacity:0}}
-@keyframes pulse-ring{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes recognizeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
 @keyframes numberPop{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
-.scan-line{animation:scanline 2s linear infinite;}
-.pulse-ring{animation:pulse-ring 2s ease-in-out infinite;}
 .shimmer-fx{background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.05) 50%,rgba(255,255,255,0) 100%);background-size:200% 100%;animation:shimmer 3s infinite;}
 .num-pop{animation:numberPop .6s ease-out both;}
 .card-row{transition:all .15s ease;cursor:pointer;}
@@ -38,7 +32,7 @@ body{font-family:'Noto Sans JP',sans-serif;background:#050b18;color:#e0e8ff;min-
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;align-items:flex-end;}
 .modal-bg.open{display:flex;animation:fadeIn .2s ease;}
 .modal-sheet{width:100%;animation:slideUp .28s ease;}
-input[type=number]{-moz-appearance:textfield;}&
+input[type=number]{-moz-appearance:textfield;}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 .nav-active-icon{color:#3b82f6 !important;filter:drop-shadow(0 0 7px rgba(59,130,246,.9));}
 .nav-active-label{color:#3b82f6 !important;}
@@ -53,12 +47,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .sndk-btn:active{opacity:.72;transform:scale(.96);}
 #sync-btn{transition:opacity .25s,box-shadow .25s;}
 .icon-spinning{animation:spin .8s linear infinite;display:inline-flex;align-items:center;}
-@keyframes camScanLine{0%{top:6%;opacity:0}8%{opacity:1}44%{top:86%;opacity:1}50%{opacity:0;top:86%}51%{top:6%;opacity:0}60%{opacity:1}94%{top:86%;opacity:1}100%{top:86%;opacity:0}}
-.cam-scan{animation:camScanLine 2.6s ease-in-out infinite;}
-@keyframes dotPulse{0%,100%{opacity:.3;transform:scale(.75)}50%{opacity:1;transform:scale(1)}}
-@keyframes shutterPulse{0%,100%{transform:scale(1);opacity:.2}50%{transform:scale(1.12);opacity:.35}}
-@keyframes camSuccessIn{from{opacity:0;transform:scale(.9) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.cam-success-in{animation:camSuccessIn .4s cubic-bezier(.17,.67,.35,1.2) both;}
 #btn-login{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.03em;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);color:#e0e8ff;transition:background .2s;}
 #btn-login:active{background:rgba(255,255,255,.14);}
 #btn-user{display:none;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:20px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);cursor:pointer;transition:background .2s;}
@@ -72,6 +60,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .neon-active{animation:neonGlow 2.8s ease-in-out infinite;}
 .premium-card{transition:transform .18s ease,box-shadow .18s ease;}
 .premium-card:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 24px rgba(59,130,246,.12);}
+.psa-badge{background:linear-gradient(135deg,#78350f,#92400e);border:1px solid rgba(251,191,36,.35);color:#fbbf24;font-size:9px;font-weight:900;padding:1px 5px;border-radius:4px;letter-spacing:.04em;}
+.search-result-row{transition:background .15s,border-color .15s;}
+.search-result-row:hover{background:rgba(13,21,51,.95) !important;border-color:rgba(59,130,246,.25) !important;}
 </style>
 </head>
 <body class="bg-grid">
@@ -93,7 +84,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <div class="w-1.5 h-1.5 rounded-full bg-green-400" style="box-shadow:0 0 6px #4ade80;"></div>
         <span class="text-green-400 text-xs font-bold tracking-wider">LIVE</span>
       </div>
-      <!-- Google ログイン / ユーザーアバター -->
       <button id="btn-login" onclick="signInWithGoogle()">
         <svg width="14" height="14" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.08 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-3.59-13.46-8.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
         ログイン
@@ -210,81 +200,38 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 </div>
 
 <!-- ==============================
-     SCAN
+     SEARCH（カード検索・追加）
      ============================== -->
-<div id="screen-scan" class="screen">
-  <div class="mt-4 text-center">
+<div id="screen-search" class="screen">
+  <div class="mt-4">
     <div class="mb-1">
-      <span class="font-orb text-base font-bold text-white tracking-widest">CARD SCANNER</span>
+      <span class="font-orb text-base font-bold text-white tracking-widest">CARD SEARCH</span>
     </div>
-    <p class="text-xs text-gray-500 mb-5">カメラでカードを読み取り、相場を即時表示</p>
+    <p class="text-xs text-gray-500 mb-4">カード名・型番でマスターデータを検索して追加</p>
 
-    <!-- Viewfinder -->
-    <div class="relative mx-auto rounded-2xl overflow-hidden" id="viewfinder" style="width:272px;height:372px;background:#000;border:2px solid rgba(59,130,246,.4);box-shadow:0 0 32px rgba(59,130,246,.18);">
-      <video id="cam-video" class="absolute inset-0 w-full h-full object-cover" style="display:none;" autoplay playsinline muted></video>
-
-      <!-- Idle state -->
-      <div id="vf-idle" class="absolute inset-0 flex flex-col items-center justify-center" style="background:linear-gradient(135deg,#080f1e,#050a14);">
-        <div class="w-20 h-20 rounded-full flex items-center justify-center mb-4 pulse-ring" style="border:2px solid rgba(59,130,246,.45);background:rgba(59,130,246,.06);">
-          <i data-lucide="scan" class="w-10 h-10 text-blue-400"></i>
-        </div>
-        <p class="text-gray-500 text-xs">カメラを起動してください</p>
+    <!-- Search input -->
+    <div class="relative mb-4">
+      <div class="absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none">
+        <i data-lucide="search" class="w-4 h-4 text-blue-400"></i>
       </div>
-
-      <!-- Scanning overlay -->
-      <div id="vf-scanning" class="absolute inset-0" style="display:none;">
-        <div class="absolute top-5 left-5 w-8 h-8" style="border-top:2.5px solid #3b82f6;border-left:2.5px solid #3b82f6;border-radius:2px 0 0 0;"></div>
-        <div class="absolute top-5 right-5 w-8 h-8" style="border-top:2.5px solid #3b82f6;border-right:2.5px solid #3b82f6;border-radius:0 2px 0 0;"></div>
-        <div class="absolute bottom-5 left-5 w-8 h-8" style="border-bottom:2.5px solid #3b82f6;border-left:2.5px solid #3b82f6;border-radius:0 0 0 2px;"></div>
-        <div class="absolute bottom-5 right-5 w-8 h-8" style="border-bottom:2.5px solid #3b82f6;border-right:2.5px solid #3b82f6;border-radius:0 0 2px 0;"></div>
-        <div class="scan-line absolute left-0 right-0 h-0.5" style="background:linear-gradient(90deg,transparent,#3b82f6,transparent);top:60px;"></div>
-        <div class="absolute bottom-6 left-0 right-0 flex justify-center">
-          <span class="text-blue-400 text-xs tracking-widest font-medium" style="text-shadow:0 0 8px rgba(59,130,246,.8);">SCANNING...</span>
-        </div>
-      </div>
-
-      <!-- Result card -->
-      <div id="vf-result" class="absolute inset-0 flex flex-col items-center justify-center p-4" style="display:none;background:linear-gradient(135deg,#0d1533,#1a0a33);">
-        <div class="text-5xl mb-2">⚔️</div>
-        <div class="font-orb text-xs text-blue-300 mb-0.5 tracking-widest">OP01-120</div>
-        <div class="text-white font-bold text-xl mb-0.5">シャンクス</div>
-        <div class="sec-gradient font-black text-lg mb-3">SECRET RARE</div>
-        <div class="w-full h-px mb-3" style="background:linear-gradient(90deg,transparent,rgba(59,130,246,.5),transparent);"></div>
-        <div class="text-xs text-gray-400 mb-1 tracking-wider">現在の相場価格</div>
-        <div class="font-orb text-3xl font-black text-white mb-1">¥165,000</div>
-        <div class="flex items-center gap-1">
-          <i data-lucide="trending-up" class="w-3.5 h-3.5 text-red-400"></i>
-          <span class="text-red-400 text-xs font-bold">+¥5,000 (24h) +3.1%</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Controls -->
-    <div class="mt-5 space-y-3 px-2" id="scan-controls">
-      <button onclick="openCamera()" class="w-full py-4 rounded-xl font-bold text-white text-sm tracking-widest" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 0 22px rgba(59,130,246,.38);">
-        <span class="flex items-center justify-center gap-2"><i data-lucide="camera" class="w-5 h-5"></i>カメラでスキャン</span>
-      </button>
-      <button onclick="demoScan()" class="w-full py-3.5 rounded-xl font-bold text-blue-400 text-sm tracking-wider" style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.24);">
-        <span class="flex items-center justify-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i>デモスキャンを実行</span>
-      </button>
-    </div>
-    <div class="mt-5 space-y-3 px-2" id="result-controls" style="display:none;">
-      <button onclick="addScanned()" id="add-btn" class="w-full py-4 rounded-xl font-bold text-white text-sm" style="background:linear-gradient(135deg,#065f46,#059669);box-shadow:0 0 18px rgba(5,150,105,.28);">
-        <span class="flex items-center justify-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5"></i>コレクションに追加</span>
-      </button>
-      <button onclick="resetScan()" class="w-full py-3 rounded-xl text-sm font-medium text-gray-400" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);">
-        再スキャン
+      <input id="master-search-input" type="text"
+        placeholder="カード名・型番・仕様で検索..."
+        oninput="searchMaster(this.value)"
+        class="w-full pl-10 pr-10 py-3.5 rounded-xl text-sm outline-none"
+        style="background:rgba(13,21,51,.9);border:1.5px solid rgba(59,130,246,.35);color:white;caret-color:#3b82f6;font-size:14px;">
+      <button onclick="clearMasterSearch()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400">
+        <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
 
-    <!-- Price history chart (shown after scan) -->
-    <div id="price-hist-box" class="mt-5 rounded-xl p-4 text-left" style="display:none;background:rgba(13,21,51,.85);border:1px solid rgba(59,130,246,.15);">
-      <div class="flex items-center justify-between mb-3">
-        <span class="text-xs text-gray-400">価格推移 (30日)</span>
-        <span class="text-xs text-blue-400 font-orb">OP01-120</span>
-      </div>
-      <canvas id="priceHistChart" height="80"></canvas>
+    <!-- Results count -->
+    <div class="flex items-center justify-between mb-3">
+      <span class="text-xs text-gray-500" id="search-result-count">全 <span id="search-count-num">0</span> 件</span>
+      <span class="text-xs text-blue-400 font-medium">＋ ボタンで即追加</span>
     </div>
+
+    <!-- Results list -->
+    <div id="master-search-results" class="space-y-2"></div>
   </div>
 </div>
 
@@ -321,11 +268,11 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="text-xs text-gray-400 mt-0.5">総枚数</div>
     </div>
     <div class="rounded-xl p-3 text-center" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);">
-      <div class="font-orb text-sm font-bold text-white">¥154k</div>
+      <div class="font-orb text-sm font-bold text-white" id="col-assets">¥154k</div>
       <div class="text-xs text-gray-400 mt-0.5">評価額</div>
     </div>
     <div class="rounded-xl p-3 text-center" style="background:rgba(74,222,128,.06);border:1px solid rgba(74,222,128,.15);">
-      <div class="font-orb text-sm font-bold text-green-400">+87.8%</div>
+      <div class="font-orb text-sm font-bold text-green-400" id="col-gain-pct">+87.8%</div>
       <div class="text-xs text-gray-400 mt-0.5">利益率</div>
     </div>
   </div>
@@ -369,14 +316,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <span class="text-xs mt-0.5 font-medium nav-active-label" id="nlabel-dashboard">ホーム</span>
       <div class="w-1 h-1 rounded-full mt-1 nav-dot-active" id="ndot-dashboard"></div>
     </button>
-    <button onclick="switchTab('scan')" id="ntab-scan" class="flex flex-col items-center py-2 px-3 min-w-0">
-      <i data-lucide="scan-line" class="w-5 h-5 text-gray-500" id="nicon-scan"></i>
-      <span class="text-xs mt-0.5 font-medium text-gray-500" id="nlabel-scan">スキャン</span>
-      <div class="w-1 h-1 rounded-full mt-1" id="ndot-scan"></div>
+    <button onclick="switchTab('search')" id="ntab-search" class="flex flex-col items-center py-2 px-3 min-w-0">
+      <i data-lucide="search" class="w-5 h-5 text-gray-500" id="nicon-search"></i>
+      <span class="text-xs mt-0.5 font-medium text-gray-500" id="nlabel-search">検索</span>
+      <div class="w-1 h-1 rounded-full mt-1" id="ndot-search"></div>
     </button>
     <!-- Center FAB -->
-    <button onclick="switchTab('scan')" class="-mt-5 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 0 22px rgba(59,130,246,.55),0 -3px 12px rgba(59,130,246,.2);">
-      <i data-lucide="camera" class="w-7 h-7 text-white"></i>
+    <button onclick="switchTab('search')" class="-mt-5 w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 neon-active" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);box-shadow:0 0 22px rgba(59,130,246,.55),0 -3px 12px rgba(59,130,246,.2);">
+      <i data-lucide="search" class="w-7 h-7 text-white"></i>
     </button>
     <button onclick="switchTab('collection')" id="ntab-collection" class="flex flex-col items-center py-2 px-3 min-w-0">
       <i data-lucide="layers" class="w-5 h-5 text-gray-500" id="nicon-collection"></i>
@@ -399,170 +346,43 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   </div>
 </div>
 
-<!-- ===== CAMERA MODAL ===== -->
-<div id="camera-modal" class="flex-col" style="display:none;position:fixed;inset:0;z-index:600;background:#050b18;">
-
-  <!-- Top bar -->
-  <div class="flex items-center justify-between px-4 py-3 flex-shrink-0" style="background:rgba(5,11,24,.98);border-bottom:1px solid rgba(59,130,246,.15);">
-    <div class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0" style="background:linear-gradient(135deg,#1e40af,#3b82f6);box-shadow:0 0 10px rgba(59,130,246,.45);">
-        <i data-lucide="scan" class="w-4 h-4 text-white"></i>
-      </div>
-      <div>
-        <div class="font-orb text-sm font-black text-white tracking-widest leading-none">CARD SCANNER</div>
-        <div class="text-blue-300 leading-none" style="font-size:9px;margin-top:2px;">カードをガイド枠に合わせてください</div>
-      </div>
-    </div>
-    <button onclick="closeCamera()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);">
-      <i data-lucide="x" class="w-5 h-5 text-gray-400"></i>
-    </button>
-  </div>
-
-  <!-- Camera viewport -->
-  <div class="flex-1 relative overflow-hidden" style="background:#000;">
-
-    <!-- Live video feed -->
-    <video id="modal-cam-video" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline muted></video>
-
-    <!-- Vignette overlay -->
-    <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse 66% 50% at 50% 48%,transparent 52%,rgba(0,0,0,.78) 100%);"></div>
-
-    <!-- Card guide frame -->
-    <div class="absolute inset-0 flex items-center justify-center pointer-events-none" style="padding-bottom:10%;">
-      <div id="cam-guide" class="relative" style="width:min(56vw,200px);aspect-ratio:63/88;">
-        <!-- Dashed inner border -->
-        <div class="absolute inset-0" style="border:1.5px dashed rgba(59,130,246,.2);border-radius:3px;background:rgba(59,130,246,.03);"></div>
-        <!-- Corner: TL -->
-        <div class="absolute top-0 left-0" style="width:22px;height:22px;border-top:2.5px solid #60a5fa;border-left:2.5px solid #60a5fa;border-radius:2px 0 0 0;filter:drop-shadow(0 0 5px rgba(96,165,250,.7));"></div>
-        <!-- Corner: TR -->
-        <div class="absolute top-0 right-0" style="width:22px;height:22px;border-top:2.5px solid #60a5fa;border-right:2.5px solid #60a5fa;border-radius:0 2px 0 0;filter:drop-shadow(0 0 5px rgba(96,165,250,.7));"></div>
-        <!-- Corner: BL -->
-        <div class="absolute bottom-0 left-0" style="width:22px;height:22px;border-bottom:2.5px solid #60a5fa;border-left:2.5px solid #60a5fa;border-radius:0 0 0 2px;filter:drop-shadow(0 0 5px rgba(96,165,250,.7));"></div>
-        <!-- Corner: BR -->
-        <div class="absolute bottom-0 right-0" style="width:22px;height:22px;border-bottom:2.5px solid #60a5fa;border-right:2.5px solid #60a5fa;border-radius:0 0 2px 0;filter:drop-shadow(0 0 5px rgba(96,165,250,.7));"></div>
-        <!-- Scanning line -->
-        <div class="cam-scan absolute left-1 right-1" style="height:1.5px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.95),transparent);top:6%;box-shadow:0 0 8px rgba(96,165,250,.7),0 0 3px rgba(96,165,250,.9);"></div>
-      </div>
-    </div>
-
-    <!-- Hint text -->
-    <div id="cam-hint" class="absolute flex justify-center pointer-events-none" style="bottom:16px;left:0;right:0;">
-      <span class="px-4 py-1.5 rounded-full text-xs font-medium" style="background:rgba(0,0,0,.55);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(4px);">
-        カードを枠内に収めてシャッターを押してください
-      </span>
-    </div>
-
-    <!-- Flash overlay -->
-    <div id="cam-flash" class="absolute inset-0 pointer-events-none" style="display:none;opacity:0;background:white;"></div>
-
-    <!-- Scanning state -->
-    <div id="cam-scanning-state" class="absolute inset-0 flex flex-col items-center justify-center" style="display:none;background:rgba(5,11,24,.93);">
-      <div class="relative w-20 h-20 mb-5">
-        <div class="absolute inset-0 rounded-full" style="border:2px solid rgba(59,130,246,.15);"></div>
-        <div class="absolute inset-0 rounded-full" style="border-top:2.5px solid #3b82f6;border-right:2.5px solid transparent;border-bottom:2.5px solid transparent;border-left:2.5px solid transparent;animation:spin .85s linear infinite;"></div>
-        <div class="absolute inset-0 rounded-full" style="border-top:2.5px solid transparent;border-right:transparent;border-bottom:2.5px solid rgba(59,130,246,.4);border-left:transparent;animation:spin 1.1s linear infinite reverse;"></div>
-        <div class="absolute inset-3 rounded-full flex items-center justify-center" style="background:rgba(59,130,246,.09);border:1px solid rgba(59,130,246,.2);">
-          <i data-lucide="cpu" class="w-6 h-6 text-blue-400"></i>
-        </div>
-      </div>
-      <div class="font-orb text-sm font-bold text-white mb-3 tracking-widest">カードを識別中...</div>
-      <div class="flex gap-2">
-        <div class="w-1.5 h-1.5 rounded-full bg-blue-400" style="animation:dotPulse 1.2s ease-in-out infinite;"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-blue-400" style="animation:dotPulse 1.2s ease-in-out .25s infinite;"></div>
-        <div class="w-1.5 h-1.5 rounded-full bg-blue-400" style="animation:dotPulse 1.2s ease-in-out .5s infinite;"></div>
-      </div>
-      <div class="text-xs text-blue-400 mt-3 tracking-wider" style="opacity:.7;">AI解析エンジン起動</div>
-    </div>
-
-    <!-- Success state -->
-    <div id="cam-success-state" class="absolute inset-0 flex flex-col items-center justify-center p-5" style="display:none;background:rgba(5,11,24,.94);">
-      <div class="w-12 h-12 rounded-full flex items-center justify-center mb-4 cam-success-in" style="background:rgba(34,197,94,.12);border:2px solid rgba(34,197,94,.45);box-shadow:0 0 22px rgba(34,197,94,.2);">
-        <i data-lucide="check" class="w-6 h-6 text-green-400"></i>
-      </div>
-      <div class="font-orb text-xs font-bold text-green-400 mb-4 tracking-widest cam-success-in" style="animation-delay:.05s;">識別成功</div>
-      <!-- Result card preview -->
-      <div id="cam-success-card" class="rounded-2xl p-5 text-center cam-success-in" style="animation-delay:.12s;background:linear-gradient(135deg,#0d1533,#200a33);border:1px solid rgba(255,107,0,.3);box-shadow:0 0 28px rgba(255,107,0,.12);width:190px;">
-        <div class="text-4xl mb-2">🤠</div>
-        <div class="font-orb text-xs text-blue-300 tracking-widest mb-1">P-001</div>
-        <div class="text-white font-bold text-xl leading-tight mb-0.5">モンキー・D・ルフィ</div>
-        <div class="text-purple-400 font-black text-base mb-3">PROMO</div>
-        <div class="w-full h-px mb-3" style="background:linear-gradient(90deg,transparent,rgba(59,130,246,.35),transparent);"></div>
-        <div class="text-xs text-gray-500 mb-0.5">スニダン相場</div>
-        <div class="font-orb text-2xl font-black text-white">¥3,000</div>
-        <div class="flex items-center justify-center gap-1 mt-1">
-          <i data-lucide="bar-chart-2" class="w-3 h-3 text-blue-400"></i>
-          <span class="text-blue-400 text-xs font-bold">スニダン相場</span>
-        </div>
-      </div>
-      <div class="text-xs text-gray-600 mt-4 cam-success-in" style="animation-delay:.2s;">コレクションに追加します...</div>
-    </div>
-
-    <!-- Error state -->
-    <div id="cam-error-state" class="absolute inset-0 flex flex-col items-center justify-center px-8" style="display:none;background:#050b18;">
-      <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);">
-        <i data-lucide="camera-off" class="w-8 h-8 text-gray-600"></i>
-      </div>
-      <div class="text-sm font-bold text-gray-300 mb-2 text-center">カメラへのアクセスが拒否されました</div>
-      <div class="text-xs text-gray-600 text-center mb-6 leading-relaxed">ブラウザのアドレスバー横にあるカメラアイコンから許可してください。</div>
-      <button onclick="retryCam()" class="w-full py-3 rounded-xl text-sm font-bold text-white mb-2" style="background:linear-gradient(135deg,#1d4ed8,#3b82f6);">
-        <span class="flex items-center justify-center gap-2"><i data-lucide="refresh-cw" class="w-4 h-4"></i>再試行</span>
-      </button>
-      <button onclick="closeCamera()" class="w-full py-3 rounded-xl text-sm font-medium text-gray-400" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);">閉じる</button>
-    </div>
-  </div>
-
-  <!-- Bottom controls -->
-  <div id="cam-controls" class="flex-shrink-0 flex items-center justify-between px-8 pt-4 pb-6" style="background:rgba(5,11,24,.98);border-top:1px solid rgba(59,130,246,.1);">
-    <!-- Close -->
-    <button onclick="closeCamera()" class="w-13 h-13 rounded-full flex items-center justify-center" style="width:52px;height:52px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);">
-      <i data-lucide="x" class="w-5 h-5 text-gray-400"></i>
-    </button>
-    <!-- Shutter button -->
-    <div class="relative flex items-center justify-center" style="width:80px;height:80px;">
-      <!-- Pulse ring -->
-      <div class="absolute inset-0 rounded-full" style="background:rgba(255,255,255,.12);animation:shutterPulse 2s ease-in-out infinite;"></div>
-      <button id="shutter-btn" onclick="shutterClick()"
-        class="relative w-16 h-16 rounded-full flex items-center justify-center"
-        style="background:white;box-shadow:0 4px 20px rgba(0,0,0,.5),0 0 0 3px rgba(255,255,255,.3);">
-        <i data-lucide="aperture" class="w-7 h-7 text-gray-800"></i>
-      </button>
-    </div>
-    <!-- Flip camera -->
-    <button onclick="flipCamera()" class="rounded-full flex items-center justify-center" style="width:52px;height:52px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.18);">
-      <i data-lucide="flip-horizontal-2" class="w-5 h-5 text-blue-400"></i>
-    </button>
-  </div>
-</div>
-
 <script>
 // ===== DATA =====
 const DEFAULT_CARDS = [
-  {id:1, code:'OP01-120',name:'シャンクス',           rarity:'SEC',series:'ROMANCE DAWN',          qty:1,buy:35000,mkt:165000,emoji:'⚔️',bg:'#1a0800'},
-  {id:2, code:'OP01-121',name:'ゴールド・ロジャー',   rarity:'SEC',series:'ROMANCE DAWN',          qty:1,buy:10000,mkt:45000, emoji:'👑',bg:'#000820'},
-  {id:3, code:'OP04-062',name:'ポートガス・D・エース',rarity:'SEC',series:'Kingdoms of Intrigue',  qty:2,buy:14000,mkt:28000, emoji:'🔥',bg:'#0a0a1a'},
-  {id:4, code:'OP02-099',name:'ニコ・ロビン',         rarity:'SEC',series:'PARAMOUNT WAR',         qty:1,buy:5000, mkt:8500,  emoji:'📚',bg:'#0a1a0a'},
-  {id:5, code:'OP03-040',name:'ナミ',                 rarity:'SEC',series:'Pillars of Strength',   qty:1,buy:8000, mkt:12000, emoji:'🌊',bg:'#0a1020'},
-  {id:6, code:'OP05-119',name:'ロロノア・ゾロ',       rarity:'SEC',series:'Awakening of New Era',  qty:1,buy:8000, mkt:22000, emoji:'🗡️',bg:'#1a0a00'},
-  {id:7, code:'OP01-060',name:'モンキー・D・ルフィ', rarity:'SR', series:'ROMANCE DAWN',          qty:3,buy:900,  mkt:3200,  emoji:'🤠',bg:'#1a1000'},
-  {id:8, code:'OP02-001',name:'ポートガス・D・エース',rarity:'SR', series:'PARAMOUNT WAR',         qty:2,buy:1200, mkt:2800,  emoji:'🔥',bg:'#0a0a1a'},
-  {id:9, code:'OP04-001',name:'ヤマト',               rarity:'SR', series:'Kingdoms of Intrigue',  qty:1,buy:2500, mkt:4800,  emoji:'🐉',bg:'#1a0010'},
-  {id:10,code:'OP05-001',name:'カタクリ',             rarity:'SR', series:'Awakening of New Era',  qty:1,buy:1800, mkt:3500,  emoji:'🍡',bg:'#100a1a'},
-  {id:11,code:'OP03-022',name:'サボ',                 rarity:'R',  series:'Pillars of Strength',   qty:4,buy:300,  mkt:500,   emoji:'📜',bg:'#0a1a0a'},
-  {id:12,code:'OP01-025',name:'ナミ',                 rarity:'R',  series:'ROMANCE DAWN',          qty:2,buy:200,  mkt:350,   emoji:'🌊',bg:'#0a1020'},
+  {id:1,  code:'OP01-120',name:'シャンクス',           rarity:'SEC',series:'ROMANCE DAWN',         qty:1,psaQty:0,buy:35000,mkt:165000,emoji:'⚔️',bg:'#1a0800'},
+  {id:2,  code:'OP01-121',name:'ゴールド・ロジャー',   rarity:'SEC',series:'ROMANCE DAWN',         qty:1,psaQty:0,buy:10000,mkt:45000, emoji:'👑',bg:'#000820'},
+  {id:3,  code:'OP04-062',name:'ポートガス・D・エース',rarity:'SEC',series:'Kingdoms of Intrigue', qty:2,psaQty:0,buy:14000,mkt:28000, emoji:'🔥',bg:'#0a0a1a'},
+  {id:4,  code:'OP02-099',name:'ニコ・ロビン',         rarity:'SEC',series:'PARAMOUNT WAR',        qty:1,psaQty:0,buy:5000, mkt:8500,  emoji:'📚',bg:'#0a1a0a'},
+  {id:5,  code:'OP03-040',name:'ナミ',                 rarity:'SEC',series:'Pillars of Strength',  qty:1,psaQty:0,buy:8000, mkt:12000, emoji:'🌊',bg:'#0a1020'},
+  {id:6,  code:'OP05-119',name:'ロロノア・ゾロ',       rarity:'SEC',series:'Awakening of New Era', qty:1,psaQty:0,buy:8000, mkt:22000, emoji:'🗡️',bg:'#1a0a00'},
+  {id:7,  code:'OP01-060',name:'モンキー・D・ルフィ',  rarity:'SR', series:'ROMANCE DAWN',         qty:3,psaQty:0,buy:900,  mkt:3200,  emoji:'🤠',bg:'#1a1000'},
+  {id:8,  code:'OP02-001',name:'ポートガス・D・エース',rarity:'SR', series:'PARAMOUNT WAR',        qty:2,psaQty:0,buy:1200, mkt:2800,  emoji:'🔥',bg:'#0a0a1a'},
+  {id:9,  code:'OP04-001',name:'ヤマト',               rarity:'SR', series:'Kingdoms of Intrigue', qty:1,psaQty:0,buy:2500, mkt:4800,  emoji:'🐉',bg:'#1a0010'},
+  {id:10, code:'OP05-001',name:'カタクリ',             rarity:'SR', series:'Awakening of New Era', qty:1,psaQty:0,buy:1800, mkt:3500,  emoji:'🍡',bg:'#100a1a'},
+  {id:11, code:'OP03-022',name:'サボ',                 rarity:'R',  series:'Pillars of Strength',  qty:4,psaQty:0,buy:300,  mkt:500,   emoji:'📜',bg:'#0a1a0a'},
+  {id:12, code:'OP01-025',name:'ナミ',                 rarity:'R',  series:'ROMANCE DAWN',         qty:2,psaQty:0,buy:200,  mkt:350,   emoji:'🌊',bg:'#0a1020'},
 ];
 
-// localStorage から復元（なければ DEFAULT_CARDS を使用）
+// ── localStorage 復元（厳格モード: op-tracker-init が立っていれば必ずそこから読む）──
 let CARDS = (()=>{
   try{
-    const saved=localStorage.getItem('op-tracker-cards');
-    return saved ? JSON.parse(saved) : DEFAULT_CARDS.map(c=>({...c}));
-  }catch(e){ return DEFAULT_CARDS.map(c=>({...c})); }
+    const raw = localStorage.getItem('op-tracker-cards');
+    const initialized = localStorage.getItem('op-tracker-init');
+    if(raw !== null || initialized){
+      // ユーザーが一度でも保存したなら、デモデータは使わない
+      const parsed = raw ? JSON.parse(raw) : [];
+      // psaQty フィールドが無い古いデータには補完する
+      return parsed.map(c => ({psaQty:0, ...c}));
+    }
+    return DEFAULT_CARDS.map(c=>({...c}));
+  }catch(e){ return []; }
 })();
 
 function saveCards(){
-  try{ localStorage.setItem('op-tracker-cards',JSON.stringify(CARDS)); }catch(e){}
-  // Firebase Firestore への書き込みはここに追加:
-  // if(fbAuth?.currentUser){ db.collection('users').doc(fbAuth.currentUser.uid).set({cards:CARDS}); }
+  try{
+    localStorage.setItem('op-tracker-cards', JSON.stringify(CARDS));
+    localStorage.setItem('op-tracker-init', '1');
+  }catch(e){}
 }
 
 const MARKET = {
@@ -589,23 +409,22 @@ const MARKET = {
   ]
 };
 
+// マスターデータ（psaMkt = PSA10 の推定相場）
 const CARD_MASTER_DATA = {
-  'P-001'       :{code:'P-001',   name:'モンキー・D・ルフィ',  spec:'プロモ',             rarity:'PR', series:'プロモーション',    mkt:3000,   buy:0,     emoji:'🤠',bg:'#1a1000'},
-  'OP01-120_SEC':{code:'OP01-120',name:'シャンクス',           spec:'通常SEC',             rarity:'SEC',series:'ROMANCE DAWN',     mkt:1500,   buy:0,     emoji:'⚔️',bg:'#1a0800'},
-  'OP01-120_SP' :{code:'OP01-120',name:'シャンクス',           spec:'スーパーパラレル',   rarity:'SEC',series:'ROMANCE DAWN',     mkt:120000, buy:35000, emoji:'⚔️',bg:'#090020'},
-  'OP09-119_SEC':{code:'OP09-119',name:'エース＆サボ＆ルフィ', spec:'シークレット',        rarity:'SEC',series:'The Four Emperors',mkt:15000,  buy:0,     emoji:'🔥',bg:'#1a0800'},
-  'OP09-119_SP' :{code:'OP09-119',name:'モンキー・D・ルフィ',  spec:'スーパーパラレル',   rarity:'SEC',series:'The Four Emperors',mkt:150000, buy:0,     emoji:'🌟',bg:'#000a20'},
+  'P-001'       :{code:'P-001',   name:'モンキー・D・ルフィ',  spec:'プロモ',           rarity:'PR', series:'プロモーション',    mkt:3000,   psaMkt:10000,  buy:0,     emoji:'🤠',bg:'#1a1000'},
+  'OP01-120_SEC':{code:'OP01-120',name:'シャンクス',           spec:'通常SEC',           rarity:'SEC',series:'ROMANCE DAWN',     mkt:1500,   psaMkt:6000,   buy:0,     emoji:'⚔️',bg:'#1a0800'},
+  'OP01-120_SP' :{code:'OP01-120',name:'シャンクス',           spec:'スーパーパラレル', rarity:'SEC',series:'ROMANCE DAWN',     mkt:120000, psaMkt:450000, buy:35000, emoji:'⚔️',bg:'#090020'},
+  'OP09-119_SEC':{code:'OP09-119',name:'エース＆サボ＆ルフィ', spec:'シークレット',      rarity:'SEC',series:'The Four Emperors',mkt:15000,  psaMkt:55000,  buy:0,     emoji:'🔥',bg:'#1a0800'},
+  'OP09-119_SP' :{code:'OP09-119',name:'モンキー・D・ルフィ',  spec:'スーパーパラレル', rarity:'SEC',series:'The Four Emperors',mkt:150000, psaMkt:550000, buy:0,     emoji:'🌟',bg:'#000a20'},
 };
 
-let curRarity='all', curSearch='', curMarket='gainers', editCard=null, lastScanned=CARD_MASTER_DATA['P-001'];
-let demoScanCount=0;
+let curRarity='all', curSearch='', curMarket='gainers', editCard=null;
 
 // ===== NAV TABS =====
-const TABS=['dashboard','scan','collection','market'];
+const TABS=['dashboard','search','collection','market'];
+
 function switchTab(tab){
-  // モーダル・オーバーレイを強制リセット
   try{document.getElementById('edit-modal').classList.remove('open');}catch(e){}
-  try{const cm=document.getElementById('camera-modal');if(cm)cm.style.display='none';}catch(e){}
   try{const sw=document.getElementById('sync-icon-wrap');if(sw)sw.classList.remove('icon-spinning');}catch(e){}
   try{const sb=document.getElementById('sync-btn');if(sb){sb.disabled=false;sb.style.opacity='';}}catch(e){}
 
@@ -617,9 +436,8 @@ function switchTab(tab){
     const dot=document.getElementById('ndot-'+t);
     const btn=document.getElementById('ntab-'+t);
     if(btn) btn.classList.remove('nav-btn-active');
-    // classList を使う（SVGAnimatedString対策）
-    if(icon){try{icon.classList.remove('nav-active-icon');}catch(e){}icon.style.color='#6b7280';icon.style.filter='';}
-    if(label){try{label.classList.remove('nav-active-label');}catch(e){}label.style.color='#6b7280';}
+    if(icon){icon.classList.remove('nav-active-icon');icon.style.color='#6b7280';icon.style.filter='';}
+    if(label){label.classList.remove('nav-active-label');label.style.color='#6b7280';}
     if(dot){dot.style.background='transparent';dot.style.boxShadow='';}
   });
 
@@ -630,11 +448,16 @@ function switchTab(tab){
   const dot=document.getElementById('ndot-'+tab);
   const btn=document.getElementById('ntab-'+tab);
   if(btn) btn.classList.add('nav-btn-active');
-  if(icon){try{icon.classList.add('nav-active-icon');}catch(e){}icon.style.color='#3b82f6';icon.style.filter='drop-shadow(0 0 7px rgba(59,130,246,.9))';}
-  if(label){try{label.classList.add('nav-active-label');}catch(e){}label.style.color='#3b82f6';}
+  if(icon){icon.classList.add('nav-active-icon');icon.style.color='#3b82f6';icon.style.filter='drop-shadow(0 0 7px rgba(59,130,246,.9))';}
+  if(label){label.classList.add('nav-active-label');label.style.color='#3b82f6';}
   if(dot){dot.style.background='#3b82f6';dot.style.boxShadow='0 0 6px #3b82f6';}
+
+  if(tab==='search') initSearchScreen();
   if(tab==='collection') renderCards();
   if(tab==='market') renderMarket();
+
+  // タブ状態を保存（リロード時に復元）
+  try{ localStorage.setItem('op-tracker-tab', tab); }catch(e){}
 }
 
 // ===== RARITY STYLE =====
@@ -647,12 +470,13 @@ function rarityStyle(r){
 
 // ===== DASHBOARD TOP CARDS =====
 function renderDashTopCards(){
-  const top=[...CARDS].sort((a,b)=>(b.mkt*b.qty)-(a.mkt*a.qty)).slice(0,3);
+  const top=[...CARDS].sort((a,b)=>calcCardAsset(b)-calcCardAsset(a)).slice(0,3);
   const el=document.getElementById('dash-top-cards');
   if(!el)return;
   el.innerHTML=top.map(c=>{
     const rs=rarityStyle(c.rarity);
     const profit=(c.mkt-c.buy)*c.qty;
+    const psaV=Math.round(c.mkt*3.5)*(c.psaQty||0);
     return `<div class="flex items-center gap-3 rounded-xl p-3 card-row" style="background:rgba(13,21,51,.85);border:1px solid rgba(59,130,246,.12);" onclick="switchTab('collection')">
       <div class="w-10 h-14 rounded-lg flex-shrink-0 relative overflow-hidden flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,${c.bg},#05090f);">${c.emoji}
         <div class="absolute bottom-0 left-0 right-0 h-0.5" style="background:linear-gradient(90deg,transparent,${rs.border},transparent);"></div>
@@ -661,16 +485,20 @@ function renderDashTopCards(){
         <div class="flex items-center gap-1.5 mb-0.5">
           <span class="text-xs font-bold text-white truncate">${c.name}</span>
           <span class="text-xs px-1 py-0.5 rounded font-black flex-shrink-0 ${rs.cls}" style="background:${rs.bg};border:1px solid ${rs.border};">${c.rarity}</span>
+          ${(c.psaQty||0)>0?`<span class="psa-badge">PSA10×${c.psaQty}</span>`:''}
         </div>
         <div class="text-xs text-gray-500">${c.code} × ${c.qty}枚</div>
       </div>
       <div class="text-right flex-shrink-0">
-        <div class="font-orb text-sm font-bold text-white">¥${(c.mkt*c.qty).toLocaleString()}</div>
+        <div class="font-orb text-sm font-bold text-white">¥${calcCardAsset(c).toLocaleString()}</div>
         <div class="text-xs ${profit>=0?'text-green-400':'text-red-400'}">${profit>=0?'+':''}¥${Math.abs(profit).toLocaleString()}</div>
-        <div class="text-xs text-gray-500">購入 ¥${(c.buy*c.qty).toLocaleString()}</div>
       </div>
     </div>`;
   }).join('');
+}
+
+function calcCardAsset(c){
+  return c.mkt*c.qty + Math.round(c.mkt*3.5)*(c.psaQty||0);
 }
 
 // ===== PORTFOLIO CHART =====
@@ -693,92 +521,92 @@ function initPortfolioChart(){
   });
 }
 
-// ===== SCAN =====
-let scanState='idle', priceHistInst=null;
-function startScan(){
-  if(navigator.mediaDevices?.getUserMedia){
-    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})
-      .then(stream=>{
-        const v=document.getElementById('cam-video');
-        v.srcObject=stream;v.style.display='block';
-        setScanState('scanning');
-        setTimeout(()=>{stream.getTracks().forEach(t=>t.stop());v.style.display='none';recognizeCard();},2800);
-      })
-      .catch(()=>demoScan());
-  } else demoScan();
+// ===== SEARCH SCREEN =====
+function initSearchScreen(){
+  const input=document.getElementById('master-search-input');
+  const q=input?input.value:'';
+  searchMaster(q);
 }
-async function demoScan(){
-  setScanState('scanning');
-  const card=await recognizeCardImageOnline(null);
-  lastScanned=card||CARD_MASTER_DATA['P-001'];
-  recognizeCard();
+
+function clearMasterSearch(){
+  const input=document.getElementById('master-search-input');
+  if(input){ input.value=''; }
+  searchMaster('');
 }
-function setScanState(s){
-  scanState=s;
-  document.getElementById('vf-idle').style.display=s==='idle'?'flex':'none';
-  document.getElementById('vf-scanning').style.display=s==='scanning'?'block':'none';
-  document.getElementById('vf-result').style.display=s==='result'?'flex':'none';
-  document.getElementById('scan-controls').style.display=s==='result'?'none':'block';
-  document.getElementById('result-controls').style.display=s==='result'?'block':'none';
-  document.getElementById('price-hist-box').style.display=s==='result'?'block':'none';
+
+function searchMaster(query){
+  const q=(query||'').trim().toLowerCase();
+  const qn=q.replace(/[-\s]/g,'');
+  const entries=Object.entries(CARD_MASTER_DATA);
+  const results=entries.filter(([,c])=>{
+    if(!q) return true;
+    const cn=c.code.toLowerCase().replace(/[-\s]/g,'');
+    return(
+      c.name.toLowerCase().includes(q)||
+      c.code.toLowerCase().includes(q)||
+      cn.includes(qn)||
+      (c.spec&&c.spec.toLowerCase().includes(q))||
+      (c.series&&c.series.toLowerCase().includes(q))
+    );
+  });
+  const countEl=document.getElementById('search-count-num');
+  if(countEl) countEl.textContent=results.length;
+  renderSearchResults(results);
 }
-function recognizeCard(){
-  const c=lastScanned||CARD_MASTER_DATA['P-001'];
-  const rarityLabel={SEC:'SECRET RARE',SR:'SUPER RARE',R:'RARE',UC:'UNCOMMON',PR:'PROMO'}[c.rarity]||c.rarity;
-  const rarityClass={SEC:'sec-gradient',SR:'sr-gradient',R:'r-gradient',PR:'text-purple-400'}[c.rarity]||'text-gray-400';
-  const el=document.getElementById('vf-result');
-  el.innerHTML=`
-    <div class="text-5xl mb-2">${c.emoji}</div>
-    <div class="font-orb text-xs text-blue-300 mb-0.5 tracking-widest">${c.code}</div>
-    <div class="text-white font-bold text-xl mb-0.5">${c.name}</div>
-    <div class="${rarityClass} font-black text-lg mb-3">${rarityLabel}</div>
-    <div class="w-full h-px mb-3" style="background:linear-gradient(90deg,transparent,rgba(59,130,246,.5),transparent);width:220px;"></div>
-    <div class="text-xs text-gray-400 mb-1 tracking-wider">現在の相場価格</div>
-    <div class="font-orb text-3xl font-black text-white mb-1">¥${c.mkt.toLocaleString()}</div>
-    <div class="flex items-center gap-1">
-      <i data-lucide="bar-chart-2" class="w-3.5 h-3.5 text-blue-400"></i>
-      <span class="text-blue-400 text-xs font-bold">スニダン相場</span>
+
+function renderSearchResults(results){
+  const el=document.getElementById('master-search-results');
+  if(!el)return;
+  if(!results.length){
+    el.innerHTML=`<div class="text-center py-16 text-gray-600"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-40"></i><p class="text-sm">カードが見つかりません</p><p class="text-xs mt-1 opacity-60">型番例: OP09-119、名前: シャンクス</p></div>`;
+    lucide.createIcons({nodes:[el]});
+    return;
+  }
+  el.innerHTML=results.map(([key,c])=>{
+    const owned=CARDS.find(x=>x.code===c.code&&x.name===c.name);
+    const rs=rarityStyle(c.rarity);
+    const psaEst=c.psaMkt||Math.round(c.mkt*3.5);
+    return `<div class="search-result-row flex items-center gap-3 rounded-xl p-3" style="background:rgba(13,21,51,.75);border:1px solid rgba(59,130,246,.1);">
+      <div class="w-10 h-14 rounded-lg flex-shrink-0 flex items-center justify-center text-xl" style="background:linear-gradient(135deg,${c.bg||'#0a1020'},#05090f);">${c.emoji}</div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
+          <span class="text-xs font-bold text-white">${c.name}</span>
+          <span class="text-xs px-1 py-0.5 rounded font-black ${rs.cls}" style="background:${rs.bg};border:1px solid ${rs.border};">${c.rarity}</span>
+        </div>
+        <div class="text-xs text-gray-500">${c.code}${c.spec?' • '+c.spec:''}</div>
+        <div class="flex items-center gap-2 mt-0.5">
+          <span class="font-orb text-xs font-bold text-white">¥${c.mkt.toLocaleString()}</span>
+          <span class="text-xs text-yellow-600">PSA10: ¥${psaEst.toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="flex flex-col items-end gap-2 flex-shrink-0">
+        ${owned
+          ?`<span class="text-xs text-blue-400 font-bold">保有 ${owned.qty}枚${(owned.psaQty||0)>0?' / PSA '+owned.psaQty+'枚':''}</span>`
+          :`<span class="text-xs text-gray-600">未所持</span>`}
+        <button onclick="quickAddCard('${key}')" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.4);">
+          <i data-lucide="plus" class="w-4 h-4 text-blue-400"></i>
+        </button>
+      </div>
     </div>`;
-  setScanState('result');
+  }).join('');
   lucide.createIcons({nodes:[el]});
-  setTimeout(()=>{
-    const ctx=document.getElementById('priceHistChart');
-    if(ctx){
-      if(priceHistInst){priceHistInst.destroy();priceHistInst=null;}
-      const base=c.mkt;
-      const pts=Array.from({length:30},(_,i)=>Math.round(base*(0.88+i*.004+Math.sin(i*.5)*.04+(Math.random()-.5)*.06)));
-      pts[29]=base;
-      priceHistInst=new Chart(ctx,{
-        type:'line',
-        data:{labels:pts.map((_,i)=>`${i+1}日`),datasets:[{data:pts,borderColor:'#3b82f6',borderWidth:1.5,backgroundColor:(ctx)=>{const g=ctx.chart.ctx.createLinearGradient(0,0,0,80);g.addColorStop(0,'rgba(59,130,246,.22)');g.addColorStop(1,'rgba(59,130,246,0)');return g;},fill:true,tension:.42,pointRadius:0}]},
-        options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(13,21,51,.9)',borderColor:'rgba(59,130,246,.3)',borderWidth:1,callbacks:{label:v=>`¥${Math.round(v.raw).toLocaleString()}`}}},scales:{x:{display:false},y:{display:true,grid:{color:'rgba(255,255,255,.03)'},ticks:{color:'#4b5563',font:{size:9},callback:v=>`¥${(v/1000).toFixed(1)}k`}}}}
-      });
-    }
-  },50);
 }
-function addScanned(){
-  const c=lastScanned||CARD_MASTER_DATA['P-001'];
+
+function quickAddCard(key){
+  const c=CARD_MASTER_DATA[key];
+  if(!c)return;
   const existing=CARDS.find(x=>x.code===c.code&&x.name===c.name);
   if(existing){
     existing.qty++;
     CARDS.splice(CARDS.indexOf(existing),1);
     CARDS.unshift(existing);
   } else {
-    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg,spec:c.spec||''});
+    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,psaQty:0,buy:c.buy||0,mkt:c.mkt,emoji:c.emoji,bg:c.bg,spec:c.spec||''});
   }
   saveCards();
   refreshDashboard(true);
+  searchMaster(document.getElementById('master-search-input')?.value||'');
   showToast(`✅ ${c.name}${c.spec?' ('+c.spec+')':''} をコレクションに追加！`);
-  const btn=document.getElementById('add-btn');
-  btn.innerHTML='<span class="flex items-center justify-center gap-2">✓ コレクションに追加しました！</span>';
-  btn.style.opacity='.7';
-  setTimeout(()=>{btn.innerHTML='<span class="flex items-center justify-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5"></i>コレクションに追加</span>';btn.style.opacity='1';lucide.createIcons({nodes:[btn]});},2200);
-}
-function resetScan(){
-  const v=document.getElementById('cam-video');
-  if(v.srcObject)v.srcObject.getTracks().forEach(t=>t.stop());
-  v.style.display='none';
-  setScanState('idle');
 }
 
 // ===== COLLECTION =====
@@ -807,12 +635,22 @@ function renderCards(){
       c.name.toLowerCase().includes(q)||
       c.code.toLowerCase().includes(q)||
       c.code.toLowerCase().replace(/[-\s]/g,'').includes(qn)||
-      c.series.toLowerCase().includes(q)
+      (c.series||'').toLowerCase().includes(q)
     );
   }
   const el=document.getElementById('card-list');
   if(!el)return;
-  document.getElementById('col-count').textContent=list.reduce((s,c)=>s+c.qty,0);
+  const totalQty=list.reduce((s,c)=>s+(c.qty||0)+(c.psaQty||0),0);
+  const totalAssets=list.reduce((s,c)=>s+calcCardAsset(c),0);
+  const totalBuy=list.reduce((s,c)=>s+(c.buy||0)*(c.qty||0),0);
+  const gainPct=totalBuy>0?((totalAssets-totalBuy)/totalBuy*100):0;
+  const colCount=document.getElementById('col-count');
+  const colAssets=document.getElementById('col-assets');
+  const colGainPct=document.getElementById('col-gain-pct');
+  if(colCount) colCount.textContent=totalQty;
+  if(colAssets) colAssets.textContent=totalAssets>=1000?`¥${Math.round(totalAssets/1000)}k`:`¥${totalAssets.toLocaleString()}`;
+  if(colGainPct) colGainPct.textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(1)}%`;
+
   if(!list.length){
     el.innerHTML=`<div class="text-center py-16 text-gray-600"><i data-lucide="search-x" class="w-10 h-10 mx-auto mb-3 opacity-40"></i><p class="text-sm">カードが見つかりません</p></div>`;
     lucide.createIcons({nodes:[el]});return;
@@ -820,8 +658,10 @@ function renderCards(){
   el.innerHTML=list.map(c=>{
     const rs=rarityStyle(c.rarity);
     const profit=(c.mkt-c.buy)*c.qty;
-    const profitRate=((c.mkt-c.buy)/c.buy*100).toFixed(1);
+    const profitRate=c.buy>0?((c.mkt-c.buy)/c.buy*100).toFixed(1):'0.0';
     const pos=profit>=0;
+    const hasPsa=(c.psaQty||0)>0;
+    const psaVal=Math.round(c.mkt*3.5)*(c.psaQty||0);
     return `<div class="rounded-xl p-3 card-row premium-card" style="background:rgba(13,21,51,.85);border:1px solid rgba(59,130,246,.1);" onclick="openModal(${c.id})">
       <div class="flex items-start gap-3">
         <div class="w-10 h-14 rounded-lg flex-shrink-0 relative overflow-hidden flex items-center justify-center text-xl" style="background:linear-gradient(135deg,${c.bg},#05090f);">${c.emoji}
@@ -833,11 +673,12 @@ function renderCards(){
               <div class="flex items-center gap-1.5 mb-0.5 flex-wrap">
                 <span class="text-xs font-bold text-white truncate">${c.name}</span>
                 <span class="text-xs px-1 py-0.5 rounded font-black flex-shrink-0 ${rs.cls}" style="background:${rs.bg};border:1px solid ${rs.border};">${c.rarity}</span>
+                ${hasPsa?`<span class="psa-badge">PSA10×${c.psaQty}</span>`:''}
               </div>
               <div class="text-xs text-gray-500">${c.code}</div>
             </div>
             <div class="text-right flex-shrink-0">
-              <div class="font-orb text-sm font-bold text-white">¥${c.mkt.toLocaleString()}</div>
+              <div class="font-orb text-sm font-bold text-white">¥${calcCardAsset(c).toLocaleString()}</div>
               <div class="text-xs ${pos?'text-green-400':'text-red-400'}">${pos?'+':''}¥${Math.abs(profit).toLocaleString()}</div>
             </div>
           </div>
@@ -856,6 +697,7 @@ function renderCards(){
               </button>
             </div>
           </div>
+          ${hasPsa?`<div class="text-xs text-yellow-600 mt-1">PSA10 評価額 ¥${psaVal.toLocaleString()}</div>`:''}
           <a href="https://snkrdunk.com/search?keyword=${encodeURIComponent(c.code)}" target="_blank" rel="noopener"
             onclick="event.stopPropagation()"
             class="sndk-btn mt-2.5 flex items-center justify-center gap-1.5 w-full py-2 rounded-lg text-xs font-bold text-white"
@@ -874,7 +716,7 @@ function adjQty(id,d){
   const c=CARDS.find(x=>x.id===id);
   if(!c)return;
   c.qty=Math.max(0,c.qty+d);
-  if(c.qty===0){
+  if(c.qty===0&&(c.psaQty||0)===0){
     CARDS.splice(CARDS.indexOf(c),1);
     saveCards();
     refreshDashboard(true);
@@ -896,18 +738,19 @@ function openModal(id){
   const rs=rarityStyle(c.rarity);
   const profit=(c.mkt-c.buy)*c.qty;
   const pos=profit>=0;
+  const psaEst=Math.round(c.mkt*3.5);
   document.getElementById('modal-content').innerHTML=`
     <div class="flex items-center gap-4 mb-5">
       <div class="w-16 rounded-2xl flex items-center justify-center text-3xl" style="height:5.5rem;background:linear-gradient(135deg,${c.bg},#05090f);border:1px solid rgba(59,130,246,.18);">${c.emoji}</div>
       <div class="min-w-0">
         <div class="text-lg font-bold text-white leading-tight">${c.name}</div>
-        <div class="text-xs text-gray-500 mb-1.5">${c.code} • ${c.series}</div>
+        <div class="text-xs text-gray-500 mb-1.5">${c.code} • ${c.series||''}</div>
         <span class="text-sm px-2 py-0.5 rounded font-black ${rs.cls}" style="background:${rs.bg};border:1px solid ${rs.border};">${c.rarity}</span>
       </div>
     </div>
-    <div class="grid grid-cols-2 gap-2.5 mb-4">
+    <div class="grid grid-cols-2 gap-2.5 mb-3">
       <div class="rounded-xl p-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);">
-        <div class="text-xs text-gray-400 mb-2">保持枚数</div>
+        <div class="text-xs text-gray-400 mb-2">通常枚数</div>
         <div class="flex items-center gap-2">
           <button onclick="mQty(-1)" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);">
             <i data-lucide="minus" class="w-3.5 h-3.5 text-gray-300"></i>
@@ -918,11 +761,26 @@ function openModal(id){
           </button>
         </div>
       </div>
-      <div class="rounded-xl p-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);">
-        <div class="text-xs text-gray-400 mb-1">現在相場（1枚）</div>
-        <div class="font-orb text-sm font-bold text-white">¥${c.mkt.toLocaleString()}</div>
-        <div class="text-xs ${pos?'text-green-400':'text-red-400'} mt-1">${pos?'▲':'▼'} ¥${Math.abs(profit).toLocaleString()} (合計)</div>
+      <div class="rounded-xl p-3" style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);">
+        <div class="flex items-center gap-1 mb-2">
+          <span class="text-xs text-yellow-500 font-bold">PSA10 枚数</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="mPsaQty(-1)" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);">
+            <i data-lucide="minus" class="w-3.5 h-3.5 text-gray-300"></i>
+          </button>
+          <span class="font-orb text-2xl font-black text-yellow-400 w-6 text-center" id="modal-psa-qty">${c.psaQty||0}</span>
+          <button onclick="mPsaQty(1)" class="w-8 h-8 rounded-full flex items-center justify-center" style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);">
+            <i data-lucide="plus" class="w-3.5 h-3.5 text-yellow-400"></i>
+          </button>
+        </div>
+        <div class="text-xs text-gray-600 mt-1">推定 ¥${psaEst.toLocaleString()}/枚</div>
       </div>
+    </div>
+    <div class="rounded-xl p-3 mb-3" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);">
+      <div class="text-xs text-gray-400 mb-1">現在相場（通常1枚）</div>
+      <div class="font-orb text-sm font-bold text-white">¥${c.mkt.toLocaleString()}</div>
+      <div class="text-xs ${pos?'text-green-400':'text-red-400'} mt-1">${pos?'▲':'▼'} ¥${Math.abs(profit).toLocaleString()} (通常合計)</div>
     </div>
     <div class="mb-4">
       <label class="text-xs text-gray-400 mb-1.5 block">購入単価（1枚）</label>
@@ -939,11 +797,12 @@ function openModal(id){
   lucide.createIcons({nodes:[document.getElementById('modal-content')]});
 }
 function mQty(d){if(!editCard)return;editCard.qty=Math.max(0,editCard.qty+d);document.getElementById('modal-qty').textContent=editCard.qty;}
+function mPsaQty(d){if(!editCard)return;editCard.psaQty=Math.max(0,(editCard.psaQty||0)+d);document.getElementById('modal-psa-qty').textContent=editCard.psaQty;}
 function saveModal(){
   if(!editCard)return;
   const v=parseInt(document.getElementById('modal-buy').value);
-  if(!isNaN(v)&&v>=0)editCard.buy=v;
-  if(editCard.qty===0){
+  if(!isNaN(v)&&v>=0) editCard.buy=v;
+  if(editCard.qty===0&&(editCard.psaQty||0)===0){
     const name=editCard.name;
     CARDS.splice(CARDS.indexOf(editCard),1);
     editCard=null;
@@ -1006,186 +865,7 @@ function renderMarket(){
   lucide.createIcons({nodes:[el]});
 }
 
-// ===== CAMERA MODAL =====
-let camStream=null, camFacing='environment';
-
-function openCamera(){
-  const modal=document.getElementById('camera-modal');
-  modal.style.display='flex';
-  lucide.createIcons({nodes:[modal]});
-  setCamState('live');
-  startCamStream();
-}
-
-function startCamStream(){
-  if(!navigator.mediaDevices?.getUserMedia){
-    setCamState('error');
-    return;
-  }
-  // Ask for camera permission (browser will show its own prompt on first call)
-  navigator.mediaDevices.getUserMedia({
-    video:{facingMode:{ideal:camFacing},width:{ideal:1920},height:{ideal:1080}},
-    audio:false
-  }).then(stream=>{
-    camStream=stream;
-    const v=document.getElementById('modal-cam-video');
-    if(v){v.srcObject=stream;v.play().catch(()=>{});}
-  }).catch(err=>{
-    console.warn('Camera access error:',err.name,err.message);
-    setCamState('error');
-  });
-}
-
-function closeCamera(){
-  stopCamStream();
-  const modal=document.getElementById('camera-modal');
-  if(modal) modal.style.display='none';
-  setCamState('live');
-}
-
-function stopCamStream(){
-  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
-  const v=document.getElementById('modal-cam-video');
-  if(v) v.srcObject=null;
-}
-
-function retryCam(){
-  setCamState('live');
-  startCamStream();
-}
-
-function flipCamera(){
-  camFacing=(camFacing==='environment')?'user':'environment';
-  stopCamStream();
-  startCamStream();
-}
-
-function setCamState(s){
-  const states=['cam-scanning-state','cam-success-state','cam-error-state'];
-  states.forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.style.display='none';
-  });
-  const hint=document.getElementById('cam-hint');
-  const ctrl=document.getElementById('cam-controls');
-  const sb=document.getElementById('shutter-btn');
-  const guide=document.getElementById('cam-guide');
-
-  if(s==='scanning'){
-    document.getElementById('cam-scanning-state').style.display='flex';
-    if(hint) hint.style.display='none';
-    if(ctrl) ctrl.style.pointerEvents='none';
-  } else if(s==='success'){
-    document.getElementById('cam-success-state').style.display='flex';
-    if(hint) hint.style.display='none';
-    if(ctrl) ctrl.style.pointerEvents='none';
-    // カード情報を動的に更新
-    const sc=lastScanned||CARD_MASTER_DATA['P-001'];
-    const scLabel={SEC:'SECRET RARE',SR:'SUPER RARE',R:'RARE',UC:'UNCOMMON',PR:'PROMO'}[sc.rarity]||sc.rarity;
-    const scCls={SEC:'sec-gradient',SR:'sr-gradient',R:'r-gradient',PR:'text-purple-400'}[sc.rarity]||'text-gray-400';
-    const scard=document.getElementById('cam-success-card');
-    if(scard){scard.innerHTML=`
-      <div class="text-4xl mb-2">${sc.emoji}</div>
-      <div class="font-orb text-xs text-blue-300 tracking-widest mb-1">${sc.code}</div>
-      <div class="text-white font-bold text-xl leading-tight mb-0.5">${sc.name}</div>
-      <div class="${scCls} font-black text-base mb-3">${scLabel}</div>
-      <div class="w-full h-px mb-3" style="background:linear-gradient(90deg,transparent,rgba(59,130,246,.35),transparent);"></div>
-      <div class="text-xs text-gray-500 mb-0.5">スニダン相場</div>
-      <div class="font-orb text-2xl font-black text-white">¥${sc.mkt.toLocaleString()}</div>`;}
-    lucide.createIcons({nodes:[document.getElementById('cam-success-state')]});
-  } else if(s==='error'){
-    document.getElementById('cam-error-state').style.display='flex';
-    if(hint) hint.style.display='none';
-    if(ctrl) ctrl.style.display='none';
-    lucide.createIcons();
-  } else {
-    // live
-    if(hint) hint.style.display='flex';
-    if(ctrl){ctrl.style.display='flex';ctrl.style.pointerEvents='';}
-  }
-  if(sb) sb.disabled=(s!=='live');
-  if(guide) guide.style.opacity=(s==='live')?'1':'0.3';
-}
-
-// ── フレームキャプチャ ──────────────────────────────────────────────
-function captureVideoFrame(){
-  const v=document.getElementById('modal-cam-video');
-  const canvas=document.getElementById('capture-canvas');
-  if(!v||!canvas||v.readyState<2) return null;
-  canvas.width=v.videoWidth||640;
-  canvas.height=v.videoHeight||480;
-  canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
-  return canvas.toDataURL('image/jpeg',0.85);
-}
-
-// ── シャッター処理（非同期フロー） ────────────────────────────────
-function shutterClick(){
-  const sb=document.getElementById('shutter-btn');
-  if(sb) sb.disabled=true;
-
-  // 1. シャッターを押した瞬間にフレームをキャプチャ（カメラ停止前）
-  const capturedImage=captureVideoFrame();
-
-  // 2. フラッシュエフェクト
-  const flash=document.getElementById('cam-flash');
-  if(flash){
-    flash.style.display='block';
-    flash.style.transition='none';
-    flash.style.opacity='0';
-    void flash.offsetWidth;
-    flash.style.transition='opacity .06s ease-out';
-    flash.style.opacity='0.92';
-    setTimeout(()=>{
-      flash.style.transition='opacity .38s ease-in';
-      flash.style.opacity='0';
-      setTimeout(()=>flash.style.display='none',390);
-    },70);
-  }
-
-  // 3. カメラ停止 → スキャニング表示 → 画像解析 → 結果表示
-  setTimeout(async()=>{
-    stopCamStream();
-    setCamState('scanning');
-
-    // 画像解析（OPENAI_API_KEY 設定でリアルOCRに切り替わる）
-    const card=await recognizeCardImageOnline(capturedImage);
-    lastScanned=card||CARD_MASTER_DATA['P-001'];
-
-    setCamState('success');
-    // 1.8秒後にコレクションへ追加
-    await new Promise(r=>setTimeout(r,1800));
-    closeCamera();
-    addScannedCard();
-  },280);
-}
-
-function addScannedCard(){
-  const c=lastScanned||CARD_MASTER_DATA['P-001'];
-  const existing=CARDS.find(x=>x.code===c.code&&x.name===c.name);
-  if(existing){
-    existing.qty++;
-    CARDS.splice(CARDS.indexOf(existing),1);
-    CARDS.unshift(existing);
-  } else {
-    CARDS.unshift({id:Date.now(),code:c.code,name:c.name,rarity:c.rarity,series:c.series,qty:1,buy:c.buy,mkt:c.mkt,emoji:c.emoji,bg:c.bg,spec:c.spec||''});
-  }
-  saveCards();
-  refreshDashboard(true);
-  switchTab('collection');
-  setTimeout(()=>{
-    const first=document.querySelector('#card-list > div:first-child');
-    if(first){
-      first.style.transition='border-color .35s ease,box-shadow .35s ease';
-      first.style.borderColor='rgba(255,107,0,.55)';
-      first.style.boxShadow='0 0 24px rgba(255,107,0,.22)';
-      first.scrollIntoView({behavior:'smooth',block:'nearest'});
-      setTimeout(()=>{first.style.borderColor='';first.style.boxShadow='';},2800);
-    }
-  },250);
-  showToast(`✅ ${c.name}${c.spec?' ('+c.spec+')':''} をコレクションに追加！`);
-}
-
-// ===== SNKRDUNK SYNC =====
+// ===== TOTALS =====
 let currentTotals={totalAssets:154000,totalBuy:82000,gain:72000,gainPct:87.8,totalQty:12};
 
 function refreshDashboard(animate){
@@ -1195,11 +875,11 @@ function refreshDashboard(animate){
 }
 
 function calcTotals(){
-  const totalAssets=CARDS.reduce((s,c)=>s+c.mkt*c.qty,0);
-  const totalBuy=CARDS.reduce((s,c)=>s+c.buy*c.qty,0);
+  const totalAssets=CARDS.reduce((s,c)=>s+calcCardAsset(c),0);
+  const totalBuy=CARDS.reduce((s,c)=>s+(c.buy||0)*(c.qty||0),0);
   const gain=totalAssets-totalBuy;
   const gainPct=totalBuy>0?(gain/totalBuy*100):0;
-  const totalQty=CARDS.reduce((s,c)=>s+c.qty,0);
+  const totalQty=CARDS.reduce((s,c)=>s+(c.qty||0)+(c.psaQty||0),0);
   return {totalAssets,totalBuy,gain,gainPct,totalQty};
 }
 
@@ -1247,6 +927,7 @@ function updateDashNums(from,to,animate){
   currentTotals=Object.assign({},to);
 }
 
+// ===== SNKRDUNK SYNC =====
 let isSyncing=false;
 function syncSnkrdunk(){
   if(isSyncing)return;
@@ -1259,21 +940,17 @@ function syncSnkrdunk(){
   if(label) label.textContent='スニダンから取得中...';
 
   const fromTotals=Object.assign({},currentTotals);
-
-  // --- 5秒後に価格を変動させて反映 ---
   setTimeout(()=>{
     CARDS.forEach(c=>{
       const pct=(Math.random()-.40)*.18;
       c.mkt=Math.max(50,Math.round(c.mkt*(1+pct)/100)*100);
     });
     const toTotals=calcTotals();
-
     updateDashNums(fromTotals,toTotals,true);
     renderDashTopCards();
     const colScreen=document.getElementById('screen-collection');
     if(colScreen?.classList.contains('active')) renderCards();
 
-    // チャートに新しいポイントを追加
     if(portChartInst){
       const ds=portChartInst.data.datasets[0].data;
       const labs=portChartInst.data.labels;
@@ -1290,12 +967,7 @@ function syncSnkrdunk(){
     if(btn){btn.disabled=false;btn.style.opacity='1';btn.style.boxShadow='0 0 20px rgba(34,197,94,.1)';}
     isSyncing=false;
 
-    // 安全策：カメラモーダルが開いたままの場合は閉じる
-    const camModal=document.getElementById('camera-modal');
-    if(camModal && camModal.style.display!=='none') camModal.style.display='none';
-    // ポインターイベントを確実にリセット
     document.querySelectorAll('main, nav').forEach(el=>{ if(el) el.style.pointerEvents=''; });
-
     showToast('✅ スニーカーダンクから最新の相場データを取得しました！');
   },5000);
 }
@@ -1309,7 +981,6 @@ function showToast(msg){
     document.body.appendChild(t);
   }
   t.innerHTML=`<div style="background:linear-gradient(135deg,#052e16,#14532d);border:1px solid rgba(74,222,128,.42);border-radius:14px;padding:13px 22px;color:#4ade80;font-size:13px;font-weight:700;letter-spacing:.02em;box-shadow:0 8px 32px rgba(0,0,0,.6),0 0 28px rgba(34,197,94,.18);">${msg}</div>`;
-  t.style.pointerEvents='none';
   t.style.animation='none';
   void t.offsetWidth;
   t.style.animation='toastSlide .38s cubic-bezier(.17,.67,.35,1.15) both';
@@ -1318,9 +989,8 @@ function showToast(msg){
 }
 
 // ===== FIREBASE AUTH =====
-// ── Firebase 設定（Firebase Console → プロジェクトの設定 → アプリを追加 から値をコピー） ──
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",          // ← 自分の値に書き換え
+  apiKey:            "YOUR_API_KEY",
   authDomain:        "YOUR_PROJECT.firebaseapp.com",
   projectId:         "YOUR_PROJECT_ID",
   storageBucket:     "YOUR_PROJECT.appspot.com",
@@ -1396,7 +1066,7 @@ function loginAsGuest(){
   const name=document.getElementById('user-name');
   if(login) login.style.display='none';
   if(userBtn) userBtn.style.display='flex';
-  if(avatar){avatar.style.display='none';}
+  if(avatar){ avatar.style.display='none'; }
   if(name) name.textContent='ローカル';
   showToast('✅ ローカルアカウントとして保存します');
 }
@@ -1430,70 +1100,8 @@ function signOutUser(){
     showToast('ログアウトしました');
     return;
   }
-  if(!fbAuth) return;
+  if(!fbAuth)return;
   fbAuth.signOut().then(()=>showToast('ログアウトしました'));
-}
-
-// ===== 画像認識 OCR（AIの目） =====
-// OpenAI APIキーをここに設定すると本物の画像認識が動作します
-// const OPENAI_API_KEY = 'sk-...';
-
-async function recognizeCardImageOnline(base64Image){
-  // ── リアル OpenAI GPT-4o Vision API ────────────────────────────────
-  if(typeof OPENAI_API_KEY !== 'undefined' && OPENAI_API_KEY){
-    try{
-      const res = await fetch('https://api.openai.com/v1/chat/completions',{
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'Authorization':`Bearer ${OPENAI_API_KEY}`
-        },
-        body:JSON.stringify({
-          model:'gpt-4o',
-          messages:[{
-            role:'user',
-            content:[
-              {type:'text',
-               text:'このワンピースカードゲームのカードを識別してください。型番と仕様を以下のJSON形式だけで返してください：{"code":"OP09-119","spec":"SEC"} specはスーパーパラレル/コミパラは"SP"、通常SECは"SEC"、プロモは"PR"とします。型番が読めない場合は{"code":"不明","spec":"不明"}。JSONのみ出力してください。'},
-              {type:'image_url',image_url:{url:base64Image}}
-            ]
-          }],
-          max_tokens:60
-        })
-      });
-      const json = await res.json();
-      const text = (json.choices?.[0]?.message?.content||'').trim();
-      try{
-        const obj = JSON.parse(text);
-        const code = obj.code; const spec = obj.spec;
-        if(code && code!=='不明'){
-          const key = spec==='SP' ? `${code}_SP` : spec==='PR' ? code : `${code}_SEC`;
-          if(CARD_MASTER_DATA[key]) return CARD_MASTER_DATA[key];
-          if(CARD_MASTER_DATA[code]) return CARD_MASTER_DATA[code];
-          const m = code.match(/^([A-Z]{1,2}\d{2}-\d{3}|P-\d{3}|ST\d{2}-\d{3})/);
-          if(m?.[1] && CARD_MASTER_DATA[m[1]]) return CARD_MASTER_DATA[m[1]];
-        }
-      }catch(_){
-        const m = text.match(/\b([A-Z]{1,2}\d{2}-\d{3}|P-\d{3}|ST\d{2}-\d{3}|EB\d{2}-\d{3})\b/);
-        if(m?.[1] && CARD_MASTER_DATA[m[1]]) return CARD_MASTER_DATA[m[1]];
-      }
-    }catch(e){ console.warn('OCR APIエラー:',e.message); }
-  }
-
-  // ── デモモード（APIキー未設定時）─────────────────────────────────
-  await new Promise(r=>setTimeout(r,900));
-
-  if(!base64Image){
-    // デモスキャン: OP09-119_SEC ↔ OP09-119_SP を交互に高精度識別
-    demoScanCount++;
-    const two=['OP09-119_SEC','OP09-119_SP'];
-    return CARD_MASTER_DATA[two[(demoScanCount-1)%2]];
-  }
-  // 実撮影画像: OP09-119 の SEC/SP のいずれかに高精度識別（ハッシュで振り分け）
-  const tail=base64Image.slice(-64);
-  let hash=0;
-  for(let i=0;i<tail.length;i++) hash=(hash*31+tail.charCodeAt(i))>>>0;
-  return CARD_MASTER_DATA[hash%2===0?'OP09-119_SP':'OP09-119_SEC'];
 }
 
 // ===== NOTIFICATIONS =====
@@ -1505,16 +1113,19 @@ function showNotif(){
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded',()=>{
   lucide.createIcons();
-  // 起動時に実際の CARDS データから総資産を計算して表示
   const initTotals=calcTotals();
   currentTotals=Object.assign({},initTotals);
   updateDashNums(initTotals,initTotals,false);
   initPortfolioChart();
   renderDashTopCards();
   renderMarket();
+
+  // 保存済みタブを復元
+  const savedTab=localStorage.getItem('op-tracker-tab');
+  if(savedTab && TABS.includes(savedTab) && savedTab!=='dashboard'){
+    switchTab(savedTab);
+  }
 });
 </script>
-<!-- 撮影フレームキャプチャ用（非表示） -->
-<canvas id="capture-canvas" style="display:none;"></canvas>
 </body>
 </html>
